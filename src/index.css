@@ -4,6 +4,7 @@
   background: #140f1e;
   line-height: 1.5;
   font-weight: 400;
+  color-scheme: dark;
 }
 
 * {
@@ -17,6 +18,7 @@ body {
   background:
     radial-gradient(circle at top, rgba(156, 89, 255, 0.26), transparent 32%),
     linear-gradient(180deg, #140f1e 0%, #09080d 100%);
+  overflow: hidden;
 }
 
 button,
@@ -34,37 +36,38 @@ button:disabled {
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .app-shell {
   width: min(1200px, 100%);
   margin: 0 auto;
-  padding: 24px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 18px;
   display: grid;
-  gap: 24px;
+  gap: 16px;
+  align-content: stretch;
 }
 
-.play-shell {
-  padding-block: 20px 32px;
+.setup-shell,
+.play-shell,
+.results-shell {
+  grid-template-rows: auto 1fr;
 }
 
 .card {
-  background: rgba(18, 18, 27, 0.82);
+  background: rgba(18, 18, 27, 0.94);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(14px);
+  border-radius: 22px;
+  box-shadow: 0 14px 48px rgba(0, 0, 0, 0.28);
 }
 
 .hero-card,
 .setup-card,
 .spotlight-card,
 .results-card {
-  padding: 28px;
-}
-
-.hero-card {
-  padding-bottom: 12px;
+  padding: 20px;
 }
 
 .eyebrow {
@@ -82,17 +85,17 @@ p {
 }
 
 h1 {
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  line-height: 1;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 0.95;
 }
 
 h2 {
-  font-size: 1.2rem;
-  margin-bottom: 16px;
+  font-size: 1rem;
+  margin-bottom: 12px;
 }
 
 .hero-copy {
-  margin-top: 12px;
+  margin-top: 8px;
   max-width: 62ch;
   color: #d7d0e1;
 }
@@ -102,29 +105,30 @@ h2 {
 .control-row,
 .results-list {
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .setup-grid {
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  margin: 20px 0;
+  margin: 14px 0;
 }
 
 .players-grid {
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  margin-bottom: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 14px;
 }
 
 label {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   color: #f7efe3;
 }
 
 input {
   width: 100%;
-  padding: 14px 16px;
-  border-radius: 14px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.06);
   color: inherit;
@@ -139,7 +143,7 @@ input {
 .secondary-button {
   border: 0;
   border-radius: 999px;
-  padding: 14px 20px;
+  padding: 12px 18px;
   transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
 }
 
@@ -167,63 +171,131 @@ input {
 .spotlight-card {
   display: flex;
   justify-content: space-between;
-  align-items: end;
-  gap: 16px;
+  align-items: center;
+  gap: 12px;
 }
 
 .spotlight-meta {
   display: grid;
-  gap: 6px;
+  gap: 4px;
   text-align: right;
   color: #d7d0e1;
+  font-size: 0.92rem;
 }
 
 .main-board {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
-  gap: 20px;
-  padding: 20px;
+  gap: 16px;
+  padding: 16px;
+  min-height: 0;
 }
 
 .play-panel,
 .sidebar,
 .sidebar-card {
   display: grid;
-  gap: 16px;
+  gap: 12px;
+  min-height: 0;
 }
 
 .dice-tray {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
 }
 
 .die-card {
-  min-height: 150px;
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  min-height: 0;
+  aspect-ratio: 1 / 1.18;
+  padding: 8px 8px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
   color: inherit;
   display: grid;
-  align-content: center;
+  grid-template-rows: 1fr auto;
   justify-items: center;
-  gap: 10px;
-  transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+  gap: 6px;
+  transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 18px rgba(0, 0, 0, 0.18);
 }
 
 .die-card.is-selected {
   border-color: #facc15;
-  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.25);
-  transform: translateY(-4px);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.25), 0 12px 22px rgba(0, 0, 0, 0.22);
+  transform: translateY(-3px);
 }
 
 .die-card.is-rolling {
-  animation: roll-bounce 650ms ease;
+  animation: die-roll 650ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.die-value {
-  font-size: clamp(2rem, 5vw, 3rem);
+.die-shell {
+  align-self: stretch;
+  width: 100%;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fff9ef 0%, #f3ead7 100%);
+  color: #261d1d;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(38, 29, 29, 0.08);
+}
+
+.die-shell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), transparent 42%);
+}
+
+.die-corner {
+  position: absolute;
+  display: grid;
+  gap: 1px;
   font-weight: 700;
+  line-height: 0.9;
+  font-size: clamp(0.58rem, 1.6vw, 0.84rem);
+  z-index: 1;
+}
+
+.die-corner-top {
+  top: 8px;
+  left: 8px;
+}
+
+.die-corner-bottom {
+  right: 8px;
+  bottom: 8px;
+  transform: rotate(180deg);
+}
+
+.die-center-mark {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  z-index: 1;
+}
+
+.die-rank-mark {
+  font-size: clamp(1.15rem, 3vw, 2rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.die-suit-mark {
+  font-size: clamp(1.4rem, 3.6vw, 2.1rem);
+  line-height: 1;
+}
+
+.die-placeholder {
+  font-size: clamp(0.85rem, 2.2vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.72;
 }
 
 .die-index,
@@ -235,12 +307,24 @@ input {
   color: #d7d0e1;
 }
 
+.die-index {
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .hand-preview,
 .turn-feedback,
 .sidebar-card {
-  padding: 18px;
-  border-radius: 18px;
+  padding: 14px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.04);
+}
+
+.hand-preview,
+.turn-feedback {
+  display: grid;
+  gap: 4px;
 }
 
 .turn-feedback {
@@ -248,12 +332,12 @@ input {
 }
 
 .control-row {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .sidebar-card ol {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 18px;
 }
 
 .is-active-order {
@@ -263,7 +347,7 @@ input {
 .scoreboard-list,
 .results-list {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .score-row,
@@ -286,6 +370,7 @@ input {
   position: relative;
   overflow: hidden;
   min-height: 100vh;
+  min-height: 100dvh;
   place-content: center;
 }
 
@@ -319,10 +404,11 @@ input {
 .fireworks span:nth-child(3) { bottom: 12%; left: 18%; animation-delay: 600ms; }
 .fireworks span:nth-child(4) { bottom: 18%; right: 18%; animation-delay: 900ms; }
 
-@keyframes roll-bounce {
+@keyframes die-roll {
   0% { transform: rotate(0deg) scale(1); }
-  30% { transform: rotate(-10deg) scale(0.94); }
-  60% { transform: rotate(10deg) scale(1.05); }
+  15% { transform: rotate(-14deg) translateY(2px) scale(0.96); }
+  40% { transform: rotate(12deg) translateY(-3px) scale(1.04); }
+  65% { transform: rotate(-8deg) translateY(1px) scale(0.98); }
   100% { transform: rotate(0deg) scale(1); }
 }
 
@@ -333,34 +419,199 @@ input {
 }
 
 @media (max-width: 900px) {
-  .main-board {
-    grid-template-columns: 1fr;
+  .app-shell {
+    padding: 14px;
   }
 
-  .dice-tray {
-    grid-template-columns: repeat(5, minmax(52px, 1fr));
+  .main-board {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .spotlight-card {
-    align-items: start;
-    flex-direction: column;
-  }
-
-  .spotlight-meta {
-    text-align: left;
+    align-items: center;
   }
 }
 
 @media (max-width: 640px) {
-  .app-shell {
-    padding: 16px;
+  body {
+    overflow: hidden;
   }
 
-  .dice-tray {
+  .app-shell {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .setup-shell,
+  .play-shell,
+  .results-shell {
+    grid-template-rows: auto 1fr;
+  }
+
+  .hero-card,
+  .setup-card,
+  .spotlight-card,
+  .results-card,
+  .main-board {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: clamp(1.45rem, 7vw, 2rem);
+  }
+
+  h2 {
+    margin-bottom: 8px;
+  }
+
+  .hero-copy {
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+
+  .compact-grid {
+    gap: 8px;
+  }
+
+  .players-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .die-card:last-child {
-    grid-column: 1 / -1;
+  label {
+    gap: 4px;
+    font-size: 0.82rem;
+  }
+
+  input,
+  .primary-button,
+  .secondary-button {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .spotlight-card {
+    gap: 8px;
+    align-items: start;
+    flex-direction: row;
+  }
+
+  .spotlight-meta {
+    margin-left: auto;
+    text-align: right;
+    font-size: 0.74rem;
+  }
+
+  .main-board {
+    gap: 10px;
+  }
+
+  .play-panel {
+    gap: 10px;
+  }
+
+  .dice-tray {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .die-card {
+    padding: 5px 5px 6px;
+    border-radius: 14px;
+    aspect-ratio: 0.86;
+    gap: 4px;
+  }
+
+  .die-shell {
+    border-radius: 11px;
+  }
+
+  .die-corner-top {
+    top: 5px;
+    left: 5px;
+  }
+
+  .die-corner-bottom {
+    right: 5px;
+    bottom: 5px;
+  }
+
+  .die-index {
+    font-size: 0.56rem;
+    letter-spacing: 0.03em;
+  }
+
+  .die-rank-mark {
+    font-size: 0.95rem;
+  }
+
+  .die-suit-mark {
+    font-size: 1.1rem;
+  }
+
+  .hand-preview,
+  .turn-feedback,
+  .sidebar-card {
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 0.83rem;
+  }
+
+  .control-row {
+    gap: 8px;
+  }
+
+  .sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .sidebar-card ol,
+  .scoreboard-list {
+    font-size: 0.8rem;
+  }
+
+  .result-row,
+  .score-row {
+    gap: 8px;
+  }
+
+  .results-card {
+    align-self: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .app-shell {
+    padding: 8px;
+  }
+
+  .hero-card,
+  .setup-card,
+  .spotlight-card,
+  .results-card,
+  .main-board {
+    padding: 10px;
+  }
+
+  .players-grid,
+  .sidebar {
+    gap: 6px;
+  }
+
+  .dice-tray {
+    gap: 4px;
+  }
+
+  .die-card {
+    padding: 4px;
+  }
+
+  .die-index {
+    display: none;
   }
 }

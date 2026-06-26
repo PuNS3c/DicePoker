@@ -61,6 +61,23 @@ The automated tests focus on the highest-risk game logic:
 
 The app is configured for the repository base path `/DicePoker/` in `vite.config.ts`.
 
+For routine deployments after making changes, run:
+
+```bash
+npm run deploy -- "feat: describe your change"
+```
+
+What the script does:
+
+- runs `npm test`
+- runs `npm run build`
+- stages all current changes
+- creates a commit from the message you pass in
+- pushes `main` to `origin`
+- enables GitHub Pages with GitHub Actions if needed
+- waits for the `Deploy GitHub Pages` workflow to finish
+- prints the live Pages URL
+
 Deployment is handled by `.github/workflows/deploy.yml`:
 
 1. install dependencies with `npm ci`

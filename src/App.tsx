@@ -30,6 +30,15 @@ const defaultSetup = {
   roundCount: 5,
 }
 
+const CARD_FACE_ART: Record<1 | 2 | 3 | 4 | 5 | 6, { rank: string; suit: string; name: string }> = {
+  1: { rank: '9', suit: '♣', name: 'Nine of Clubs' },
+  2: { rank: '10', suit: '♦', name: 'Ten of Diamonds' },
+  3: { rank: 'J', suit: '♥', name: 'Jack of Hearts' },
+  4: { rank: 'Q', suit: '♠', name: 'Queen of Spades' },
+  5: { rank: 'K', suit: '♦', name: 'King of Diamonds' },
+  6: { rank: 'A', suit: '♠', name: 'Ace of Spades' },
+}
+
 function buildPlayerNames(playerCount: number, currentNames: string[]): string[] {
   return Array.from({ length: playerCount }, (_, index) => currentNames[index] ?? '')
 }
@@ -40,6 +49,10 @@ function clamp(value: number, minimum: number, maximum: number): number {
 
 function formatDice(values: number[]) {
   return values.map((value) => getDieLabel(value as 1 | 2 | 3 | 4 | 5 | 6)).join(' ')
+}
+
+function getCardFaceArt(value: 1 | 2 | 3 | 4 | 5 | 6) {
+  return CARD_FACE_ART[value]
 }
 
 export default function App() {
@@ -178,18 +191,18 @@ export default function App() {
 
   if (!game) {
     return (
-      <main className="app-shell">
+      <main className="app-shell setup-shell">
         <section className="card hero-card">
           <p className="eyebrow">GitHub Pages Ready</p>
           <h1>Dice Poker Night</h1>
           <p className="hero-copy">
-            Set the table, lock in the rounds, and play a full multiplayer poker-dice match in one static screen.
+            Build a full poker-dice match, then pass the phone around the table.
           </p>
         </section>
 
         <section className="card setup-card">
           <h2>Match Setup</h2>
-          <div className="setup-grid">
+          <div className="setup-grid compact-grid">
             <label>
               <span>Players</span>
               <input
@@ -213,7 +226,7 @@ export default function App() {
             </label>
           </div>
 
-          <div className="players-grid">
+          <div className="players-grid compact-grid">
             {playerNames.map((name, index) => (
               <label key={`player-name-${index}`}>
                 <span>{`Player ${index + 1}`}</span>
@@ -295,7 +308,7 @@ export default function App() {
           <div className="dice-tray" role="list" aria-label="Poker dice">
             {activeTurn?.dice.map((die, index) => {
               const isSelected = activeTurn.selectedDice.includes(index)
-              const faceLabel = die.value === null ? '?' : getDieLabel(die.value)
+              const face = die.value === null ? null : getCardFaceArt(die.value)
 
               return (
                 <button
@@ -304,8 +317,28 @@ export default function App() {
                   className={`die-card${isSelected ? ' is-selected' : ''}${isRolling ? ' is-rolling' : ''}`}
                   onClick={() => handleToggleDie(index)}
                   disabled={!activeTurn.hasRolled || activeTurn.rerollsUsed >= 2}
+                  aria-label={face ? face.name : `Die ${index + 1}, not rolled yet`}
                 >
-                  <span className="die-value">{faceLabel}</span>
+                  <span className="die-shell" aria-hidden="true">
+                    {face ? (
+                      <>
+                        <span className="die-corner die-corner-top">
+                          <span>{face.rank}</span>
+                          <span>{face.suit}</span>
+                        </span>
+                        <span className="die-center-mark">
+                          <span className="die-rank-mark">{face.rank}</span>
+                          <span className="die-suit-mark">{face.suit}</span>
+                        </span>
+                        <span className="die-corner die-corner-bottom">
+                          <span>{face.rank}</span>
+                          <span>{face.suit}</span>
+                        </span>
+                      </>
+                    ) : (
+                      <span className="die-placeholder">Roll</span>
+                    )}
+                  </span>
                   <span className="die-index">Die {index + 1}</span>
                 </button>
               )
