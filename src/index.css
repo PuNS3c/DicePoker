@@ -163,9 +163,12 @@ input {
 }
 
 .primary-button:disabled,
-.secondary-button:disabled,
-.die-card:disabled {
+.secondary-button:disabled {
   opacity: 0.42;
+}
+
+.die-card:disabled {
+  opacity: 1;
 }
 
 .spotlight-card {
@@ -229,6 +232,10 @@ input {
 
 .die-card.is-rolling {
   animation: die-roll 650ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.die-card:disabled .die-shell {
+  filter: none;
 }
 
 .die-shell {

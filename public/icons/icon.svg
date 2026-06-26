@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Dice Poker icon</title>
+  <desc id="desc">A glowing poker die with a spade emblem.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#241437"/>
+      <stop offset="100%" stop-color="#09080d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="die" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff8ea"/>
+      <stop offset="100%" stop-color="#eadfc7"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#facc15"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="url(#bg)"/>
+  <circle cx="256" cy="174" r="190" fill="url(#glow)"/>
+  <g transform="translate(256 260) rotate(-8) translate(-256 -260)">
+    <rect x="104" y="88" width="304" height="304" rx="72" fill="#000" opacity="0.26"/>
+    <rect x="116" y="74" width="280" height="280" rx="64" fill="url(#edge)"/>
+    <rect x="128" y="86" width="256" height="256" rx="56" fill="url(#die)"/>
+    <g fill="#2a1d1f">
+      <g transform="translate(162 118)">
+        <text x="0" y="24" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="800">A</text>
+        <text x="2" y="52" font-family="Inter, system-ui, sans-serif" font-size="28">♠</text>
+      </g>
+      <g transform="translate(320 308) rotate(180)">
+        <text x="0" y="24" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="800">A</text>
+        <text x="2" y="52" font-family="Inter, system-ui, sans-serif" font-size="28">♠</text>
+      </g>
+    </g>
+    <g transform="translate(256 214)">
+      <path d="M0 -54C-22 -26 -42 -6 -42 20C-42 48 -18 68 0 68C18 68 42 48 42 20C42 -6 22 -26 0 -54Z" fill="#241437"/>
+      <circle cx="-26" cy="8" r="28" fill="#241437"/>
+      <circle cx="26" cy="8" r="28" fill="#241437"/>
+      <path d="M-10 64H10V102H34V116H-34V102H-10Z" fill="#241437"/>
+    </g>
+  </g>
+</svg>

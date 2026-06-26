@@ -62,6 +62,7 @@ export default function App() {
   const [validationError, setValidationError] = useState('')
   const [game, setGame] = useState<GameState | null>(null)
   const [isRolling, setIsRolling] = useState(false)
+  const [rollingDiceIndices, setRollingDiceIndices] = useState<number[]>([])
   const [lastTurnResult, setLastTurnResult] = useState<TurnResult | null>(null)
 
   useEffect(() => {
@@ -69,7 +70,10 @@ export default function App() {
       return undefined
     }
 
-    const timeoutId = window.setTimeout(() => setIsRolling(false), ROLL_ANIMATION_MS)
+    const timeoutId = window.setTimeout(() => {
+      setIsRolling(false)
+      setRollingDiceIndices([])
+    }, ROLL_ANIMATION_MS)
     return () => window.clearTimeout(timeoutId)
   }, [isRolling])
 
@@ -122,6 +126,11 @@ export default function App() {
       return
     }
 
+    const nextRollingDice = activeTurn.hasRolled
+      ? [...activeTurn.selectedDice]
+      : activeTurn.dice.map((_, index) => index)
+
+    setRollingDiceIndices(nextRollingDice)
     setIsRolling(true)
     setGame((currentGame) => {
       if (!currentGame?.activeTurn) {
@@ -186,6 +195,7 @@ export default function App() {
   function handleNewGame() {
     setGame(null)
     setIsRolling(false)
+    setRollingDiceIndices([])
     setLastTurnResult(null)
   }
 
@@ -309,12 +319,13 @@ export default function App() {
             {activeTurn?.dice.map((die, index) => {
               const isSelected = activeTurn.selectedDice.includes(index)
               const face = die.value === null ? null : getCardFaceArt(die.value)
+              const isRollingDie = rollingDiceIndices.includes(index)
 
               return (
                 <button
                   key={die.id}
                   type="button"
-                  className={`die-card${isSelected ? ' is-selected' : ''}${isRolling ? ' is-rolling' : ''}`}
+                  className={`die-card${isSelected ? ' is-selected' : ''}${isRollingDie ? ' is-rolling' : ''}`}
                   onClick={() => handleToggleDie(index)}
                   disabled={!activeTurn.hasRolled || activeTurn.rerollsUsed >= 2}
                   aria-label={face ? face.name : `Die ${index + 1}, not rolled yet`}

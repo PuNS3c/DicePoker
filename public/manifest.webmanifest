@@ -1,0 +1,32 @@
+{
+  "name": "Dice Poker",
+  "short_name": "Dice Poker",
+  "description": "A multiplayer poker-dice score battle built for quick phone play.",
+  "start_url": "/DicePoker/",
+  "scope": "/DicePoker/",
+  "display": "standalone",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "portrait",
+  "background_color": "#140f1e",
+  "theme_color": "#140f1e",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
