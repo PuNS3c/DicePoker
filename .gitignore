@@ -4,3 +4,14 @@ coverage/
 *.tsbuildinfo
 .DS_Store
 .scaffold/
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+*.p12
+AGENTS.md
+.claude/
+.agents/
+IMPLEMENTATION_TICKETS.md

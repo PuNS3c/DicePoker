@@ -13,6 +13,10 @@ has_worktree_changes() {
   ! git diff --quiet || ! git diff --cached --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]
 }
 
+list_untracked_files() {
+  git ls-files --others --exclude-standard
+}
+
 require_command git
 require_command npm
 require_command gh
@@ -29,6 +33,14 @@ if ! has_worktree_changes; then
   exit 0
 fi
 
+untracked_files="$(list_untracked_files)"
+
+if [ -n "$untracked_files" ]; then
+  printf 'Refusing to deploy with untracked files present:\n%s\n' "$untracked_files" >&2
+  printf 'Review and stage intended new files manually before deploying.\n' >&2
+  exit 1
+fi
+
 commit_message="${1:-chore: deploy updates $(date -u +%Y-%m-%dT%H:%M:%SZ)}"
 
 printf 'Running tests...\n'
@@ -38,7 +50,7 @@ printf 'Building production bundle...\n'
 npm run build
 
 printf 'Staging changes...\n'
-git add -A
+git add -u
 
 if git diff --cached --quiet; then
   printf 'No staged changes after build. Nothing to commit.\n'
