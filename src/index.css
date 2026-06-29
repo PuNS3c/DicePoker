@@ -56,6 +56,18 @@ button:disabled {
   grid-template-rows: auto 1fr;
 }
 
+.play-stage {
+  display: grid;
+  gap: 16px;
+  min-height: 0;
+  transform-origin: center;
+  transition: transform 220ms ease;
+}
+
+.play-stage.is-flipped {
+  transform: rotate(180deg);
+}
+
 .card {
   background: rgba(18, 18, 27, 0.94);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -102,6 +114,7 @@ h2 {
 
 .setup-grid,
 .players-grid,
+.utility-row,
 .control-row,
 .results-list {
   display: grid;
@@ -200,6 +213,27 @@ input {
   display: grid;
   gap: 12px;
   min-height: 0;
+}
+
+.utility-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.utility-row.has-two-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.utility-row.has-three-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.utility-button {
+  padding-inline: 12px;
+}
+
+.utility-button-danger {
+  background: rgba(248, 113, 113, 0.16);
+  color: #fecaca;
 }
 
 .dice-tray {
@@ -386,6 +420,51 @@ input {
   z-index: 1;
 }
 
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 8, 13, 0.78);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  z-index: 5;
+}
+
+.cheatsheet-card {
+  width: min(640px, 100%);
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.cheatsheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+}
+
+.cheatsheet-list {
+  display: grid;
+  gap: 8px;
+}
+
+.cheatsheet-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cheatsheet-row p {
+  margin-top: 2px;
+  color: #bfb6ca;
+  font-size: 0.85rem;
+}
+
 .fireworks {
   position: absolute;
   inset: 0;
@@ -441,6 +520,10 @@ input {
 
   .spotlight-card {
     align-items: center;
+  }
+
+  .utility-row.has-three-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -572,6 +655,15 @@ input {
     gap: 8px;
   }
 
+  .utility-row {
+    gap: 6px;
+  }
+
+  .utility-button {
+    padding: 9px 8px;
+    font-size: 0.76rem;
+  }
+
   .sidebar {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
@@ -589,6 +681,29 @@ input {
 
   .results-card {
     align-self: center;
+  }
+
+  .overlay-backdrop {
+    padding: 10px;
+  }
+
+  .cheatsheet-card {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .cheatsheet-header {
+    align-items: center;
+  }
+
+  .cheatsheet-row {
+    padding: 8px 10px;
+    gap: 8px;
+    font-size: 0.82rem;
+  }
+
+  .cheatsheet-row p {
+    font-size: 0.74rem;
   }
 }
 
@@ -620,5 +735,22 @@ input {
 
   .die-index {
     display: none;
+  }
+
+  .utility-row.has-three-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .utility-row.has-three-actions .utility-button:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .cheatsheet-row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .cheatsheet-row > strong:last-child {
+    grid-column: 2;
+    justify-self: start;
   }
 }

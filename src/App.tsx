@@ -39,6 +39,17 @@ const CARD_FACE_ART: Record<1 | 2 | 3 | 4 | 5 | 6, { rank: string; suit: string;
   6: { rank: 'A', suit: '♠', name: 'Ace of Spades' },
 }
 
+const HAND_CHEATSHEET = [
+  { name: 'Five of a Kind', score: '140000+', note: 'Best possible hand' },
+  { name: 'Four of a Kind', score: '120000+', note: 'Four matching dice' },
+  { name: 'Full House', score: '100000+', note: 'Three of a kind plus a pair' },
+  { name: 'Straight', score: '80000+', note: '1-2-3-4-5 or 2-3-4-5-6' },
+  { name: 'Three of a Kind', score: '60000+', note: 'Three matching dice' },
+  { name: 'Two Pair', score: '40000+', note: 'Two separate pairs' },
+  { name: 'One Pair', score: '20000+', note: 'One matching pair' },
+  { name: 'Bust / High Hand', score: '0-19999', note: 'Highest cards decide the tie-break' },
+] as const
+
 function buildPlayerNames(playerCount: number, currentNames: string[]): string[] {
   return Array.from({ length: playerCount }, (_, index) => currentNames[index] ?? '')
 }
@@ -63,6 +74,8 @@ export default function App() {
   const [game, setGame] = useState<GameState | null>(null)
   const [isRolling, setIsRolling] = useState(false)
   const [rollingDiceIndices, setRollingDiceIndices] = useState<number[]>([])
+  const [isCheatsheetOpen, setIsCheatsheetOpen] = useState(false)
+  const [isBoardFlipped, setIsBoardFlipped] = useState(false)
   const [lastTurnResult, setLastTurnResult] = useState<TurnResult | null>(null)
 
   useEffect(() => {
@@ -117,6 +130,8 @@ export default function App() {
     }
 
     setValidationError('')
+    setIsBoardFlipped(false)
+    setIsCheatsheetOpen(false)
     setLastTurnResult(null)
     setGame(createGame(setup))
   }
@@ -196,6 +211,8 @@ export default function App() {
     setGame(null)
     setIsRolling(false)
     setRollingDiceIndices([])
+    setIsCheatsheetOpen(false)
+    setIsBoardFlipped(false)
     setLastTurnResult(null)
   }
 
@@ -301,125 +318,183 @@ export default function App() {
 
   return (
     <main className="app-shell play-shell">
-      <section className="card spotlight-card">
-        <div>
-          <p className="eyebrow">Round {game.roundNumber} of {game.setup.roundCount}</p>
-          <h1>{currentPlayer?.name}&apos;s turn</h1>
-        </div>
+      <div className={`play-stage${isBoardFlipped ? ' is-flipped' : ''}`}>
+        <section className="card spotlight-card">
+          <div>
+            <p className="eyebrow">Round {game.roundNumber} of {game.setup.roundCount}</p>
+            <h1>{currentPlayer?.name}&apos;s turn</h1>
+          </div>
 
-        <div className="spotlight-meta">
-          <span>{`Turn ${game.turnIndex + 1} of ${game.playerOrder.length}`}</span>
-          <span>{activeTurn?.rerollsUsed ?? 0} / 2 rerolls used</span>
-        </div>
-      </section>
+          <div className="spotlight-meta">
+            <span>{`Turn ${game.turnIndex + 1} of ${game.playerOrder.length}`}</span>
+            <span>{activeTurn?.rerollsUsed ?? 0} / 2 rerolls used</span>
+          </div>
+        </section>
 
-      <section className="card main-board">
-        <div className="play-panel">
-          <div className="dice-tray" role="list" aria-label="Poker dice">
-            {activeTurn?.dice.map((die, index) => {
-              const isSelected = activeTurn.selectedDice.includes(index)
-              const face = die.value === null ? null : getCardFaceArt(die.value)
-              const isRollingDie = rollingDiceIndices.includes(index)
+        <section className="card main-board">
+          <div className="play-panel">
+            <div className={`utility-row${game.setup.playerCount === 2 ? ' has-three-actions' : ' has-two-actions'}`}>
+              <button type="button" className="secondary-button utility-button" onClick={() => setIsCheatsheetOpen(true)}>
+                Hand Scores
+              </button>
 
-              return (
+              {game.setup.playerCount === 2 ? (
                 <button
-                  key={die.id}
                   type="button"
-                  className={`die-card${isSelected ? ' is-selected' : ''}${isRollingDie ? ' is-rolling' : ''}`}
-                  onClick={() => handleToggleDie(index)}
-                  disabled={!activeTurn.hasRolled || activeTurn.rerollsUsed >= 2}
-                  aria-label={face ? face.name : `Die ${index + 1}, not rolled yet`}
+                  className="secondary-button utility-button"
+                  onClick={() => setIsBoardFlipped((currentValue) => !currentValue)}
                 >
-                  <span className="die-shell" aria-hidden="true">
-                    {face ? (
-                      <>
-                        <span className="die-corner die-corner-top">
-                          <span>{face.rank}</span>
-                          <span>{face.suit}</span>
-                        </span>
-                        <span className="die-center-mark">
-                          <span className="die-rank-mark">{face.rank}</span>
-                          <span className="die-suit-mark">{face.suit}</span>
-                        </span>
-                        <span className="die-corner die-corner-bottom">
-                          <span>{face.rank}</span>
-                          <span>{face.suit}</span>
-                        </span>
-                      </>
-                    ) : (
-                      <span className="die-placeholder">Roll</span>
-                    )}
-                  </span>
-                  <span className="die-index">Die {index + 1}</span>
+                  Switch Orientation
                 </button>
-              )
-            })}
-          </div>
+              ) : null}
 
-          <div className="hand-preview">
-            <strong>{visibleHand ? visibleHand.label : 'Roll all five dice to reveal a hand.'}</strong>
-            <span>{visibleHand ? `Current score: ${visibleHand.score}` : 'Select dice after the first roll to reroll them.'}</span>
-          </div>
-
-          {lastTurnResult ? (
-            <div className="turn-feedback" role="status">
-              <strong>{`${lastTurnResult.playerName} scored ${lastTurnResult.hand.label}`}</strong>
-              <span>{formatDice(lastTurnResult.dice)}</span>
+              <button type="button" className="secondary-button utility-button utility-button-danger" onClick={handleNewGame}>
+                End Game
+              </button>
             </div>
-          ) : null}
 
-          <div className="control-row">
-            <button
-              type="button"
-              className="primary-button"
-              onClick={handleRoll}
-              disabled={isRolling || (!!activeTurn?.hasRolled && !canUseReroll)}
-            >
-              {activeTurn?.hasRolled ? 'Reroll Selected' : 'Roll Dice'}
-            </button>
+            <div className="dice-tray" role="list" aria-label="Poker dice">
+              {activeTurn?.dice.map((die, index) => {
+                const isSelected = activeTurn.selectedDice.includes(index)
+                const face = die.value === null ? null : getCardFaceArt(die.value)
+                const isRollingDie = rollingDiceIndices.includes(index)
 
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={handleConfirmTurn}
-              disabled={isRolling || !canUseConfirm}
-            >
-              Confirm Hand
-            </button>
-          </div>
-        </div>
-
-        <aside className="sidebar">
-          <section className="sidebar-card">
-            <h2>Play Order</h2>
-            <ol>
-              {game.playerOrder.map((playerId, index) => {
-                const player = game.players.find((entry) => entry.id === playerId)
                 return (
-                  <li key={playerId} className={index === game.turnIndex ? 'is-active-order' : ''}>
-                    {player?.name}
-                  </li>
+                  <button
+                    key={die.id}
+                    type="button"
+                    className={`die-card${isSelected ? ' is-selected' : ''}${isRollingDie ? ' is-rolling' : ''}`}
+                    onClick={() => handleToggleDie(index)}
+                    disabled={!activeTurn.hasRolled || activeTurn.rerollsUsed >= 2}
+                    aria-label={face ? face.name : `Die ${index + 1}, not rolled yet`}
+                  >
+                    <span className="die-shell" aria-hidden="true">
+                      {face ? (
+                        <>
+                          <span className="die-corner die-corner-top">
+                            <span>{face.rank}</span>
+                            <span>{face.suit}</span>
+                          </span>
+                          <span className="die-center-mark">
+                            <span className="die-rank-mark">{face.rank}</span>
+                            <span className="die-suit-mark">{face.suit}</span>
+                          </span>
+                          <span className="die-corner die-corner-bottom">
+                            <span>{face.rank}</span>
+                            <span>{face.suit}</span>
+                          </span>
+                        </>
+                      ) : (
+                        <span className="die-placeholder">Roll</span>
+                      )}
+                    </span>
+                    <span className="die-index">Die {index + 1}</span>
+                  </button>
                 )
               })}
-            </ol>
-          </section>
+            </div>
 
-          <section className="sidebar-card">
-            <h2>Scoreboard</h2>
-            <div className="scoreboard-list">
-              {game.scoreboard
-                .slice()
-                .sort((left, right) => right.totalScore - left.totalScore)
-                .map((entry) => (
-                  <article key={entry.playerId} className="score-row">
-                    <span>{entry.playerName}</span>
-                    <strong>{entry.totalScore}</strong>
-                  </article>
-                ))}
+            <div className="hand-preview">
+              <strong>{visibleHand ? visibleHand.label : 'Roll all five dice to reveal a hand.'}</strong>
+              <span>{visibleHand ? `Current score: ${visibleHand.score}` : 'Select dice after the first roll to reroll them.'}</span>
+            </div>
+
+            {lastTurnResult ? (
+              <div className="turn-feedback" role="status">
+                <strong>{`${lastTurnResult.playerName} scored ${lastTurnResult.hand.label}`}</strong>
+                <span>{formatDice(lastTurnResult.dice)}</span>
+              </div>
+            ) : null}
+
+            <div className="control-row">
+              <button
+                type="button"
+                className="primary-button"
+                onClick={handleRoll}
+                disabled={isRolling || (!!activeTurn?.hasRolled && !canUseReroll)}
+              >
+                {activeTurn?.hasRolled ? 'Reroll Selected' : 'Roll Dice'}
+              </button>
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={handleConfirmTurn}
+                disabled={isRolling || !canUseConfirm}
+              >
+                Confirm Hand
+              </button>
+            </div>
+          </div>
+
+          <aside className="sidebar">
+            <section className="sidebar-card">
+              <h2>Play Order</h2>
+              <ol>
+                {game.playerOrder.map((playerId, index) => {
+                  const player = game.players.find((entry) => entry.id === playerId)
+                  return (
+                    <li key={playerId} className={index === game.turnIndex ? 'is-active-order' : ''}>
+                      {player?.name}
+                    </li>
+                  )
+                })}
+              </ol>
+            </section>
+
+            <section className="sidebar-card">
+              <h2>Scoreboard</h2>
+              <div className="scoreboard-list">
+                {game.scoreboard
+                  .slice()
+                  .sort((left, right) => right.totalScore - left.totalScore)
+                  .map((entry) => (
+                    <article key={entry.playerId} className="score-row">
+                      <span>{entry.playerName}</span>
+                      <strong>{entry.totalScore}</strong>
+                    </article>
+                  ))}
+              </div>
+            </section>
+          </aside>
+        </section>
+      </div>
+
+      {isCheatsheetOpen ? (
+        <div className="overlay-backdrop" role="presentation" onClick={() => setIsCheatsheetOpen(false)}>
+          <section
+            className="card cheatsheet-card"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Hand score cheatsheet"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="cheatsheet-header">
+              <div>
+                <p className="eyebrow">Hand Scores</p>
+                <h2>Strongest to weakest</h2>
+              </div>
+
+              <button type="button" className="secondary-button utility-button" onClick={() => setIsCheatsheetOpen(false)}>
+                Close
+              </button>
+            </div>
+
+            <div className="cheatsheet-list">
+              {HAND_CHEATSHEET.map((hand, index) => (
+                <article key={hand.name} className="cheatsheet-row">
+                  <span className="result-rank">#{index + 1}</span>
+                  <div>
+                    <strong>{hand.name}</strong>
+                    <p>{hand.note}</p>
+                  </div>
+                  <strong>{hand.score}</strong>
+                </article>
+              ))}
             </div>
           </section>
-        </aside>
-      </section>
+        </div>
+      ) : null}
     </main>
   )
 }
